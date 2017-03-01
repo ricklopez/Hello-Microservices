@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -21,23 +22,35 @@ namespace Hello_Microservices
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,  ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
 
             //app.Run(async (context) =>
             //{
             //    await context.Response.WriteAsync("Hello World!");
             //});
 
-            app.UseOwin(buildFunc => 
-                buildFunc.UseNancy()
-            );
+            app.UseOwin(buildFunc =>
+            {
+                buildFunc(next => env =>
+                {
+                    System.Console.WriteLine("Got request");
+                    
+                    return next(env);
+                });
+
+                buildFunc.UseNancy();
+            });
+
+            //app.UseOwin(buildFunc => 
+            //    buildFunc.UseNancy()
+            //);
         }
     }
 }
