@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Nancy.Bootstrapper;
+using Nancy.Owin;
 
 namespace Hello_Microservices
 {
@@ -28,10 +30,14 @@ namespace Hello_Microservices
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("Hello World!");
-            });
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Hello World!");
+            //});
+
+            app.UseOwin(buildFunc => 
+                buildFunc.UseNancy()
+            );
         }
     }
 }
